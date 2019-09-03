@@ -17,7 +17,7 @@ def main(args) :
 
 	# Set up for, and begin the processing of the input XML file
 	
-	print "Processing", input_file, "into", output_file
+	print("Processing", input_file, "into", output_file)
 	in_tree = ET.parse(input_file)
 	in_root = in_tree.getroot()
 	
