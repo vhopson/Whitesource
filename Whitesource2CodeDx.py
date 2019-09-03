@@ -26,6 +26,8 @@ def main(args) :
 	today = date.today()
 	report_element = ET.Element('report')
 	report_element.set('date', str(today))
+	report_element.set('generator', 'WhiteSource')
+	report_element.set('tool', 'WhiteSource')
 	findings_element = ET.SubElement(report_element, 'findings')
 
 	# insert elements to satisfy our output XML
@@ -62,6 +64,18 @@ def main(args) :
 		desc_element.set('format', 'plain-text')
 		desc_element.text = description.text
 		
+		# Add CVE if one is available (am assuming there is a 'name' element
+		# Note that we need to decompose the CVE name into 'year', and 
+		# 'sequnce-number'
+		cves = ET.SubElement(finding_element, 'cves')
+		cve = ET.SubElement(cves, 'cve')
+		cve.set('year', name.text[4:8])
+		cve.set('sequence-number', name.text[9:])
+		
+		# Add some metadata from the tool.
+		metadata = ET.SubElement(finding_element, 'metadata')
+		ET.SubElement(metadata, 'value', { 'key' : 'Whitesource Score' }).text = score.text
+				
 	tree = ET.ElementTree(report_element)
 	tree.write(output_file, xml_declaration=True, encoding='utf-8', method='xml')
 
